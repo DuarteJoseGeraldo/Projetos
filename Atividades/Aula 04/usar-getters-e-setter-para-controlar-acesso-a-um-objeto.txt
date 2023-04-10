@@ -1,0 +1,33 @@
+// Altere apenas o código abaixo desta linha
+/* class Thermostat {
+  constructor(temp) {
+    this._fahrenheit = temp;
+  }
+  get temperature() {
+    return (5 / 9) * (this.fahrenheit - 32);
+  }
+
+  set temperature(celsius) {
+    this._fahrenheit = (celsius * 9.0) / 5 + 32;
+  }
+
+} */
+class Thermostat {
+  constructor(fahrenheit) {
+    this._celsius = (5 / 9) * (fahrenheit - 32);
+  }
+
+  get temperature() {
+    return this._celsius;
+  }
+
+  set temperature(celsius) {
+    this._celsius = celsius;
+  }
+}
+// Altere apenas o código acima desta linha
+
+const thermos = new Thermostat(76); // Definição na escala Fahrenheit
+let temp = thermos.temperature; // 24,44 em Celsius
+thermos.temperature = 26;
+temp = thermos.temperature; // 26 em Celsius

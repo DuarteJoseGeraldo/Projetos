@@ -1,0 +1,7 @@
+const sum = (...args) =>{
+  if(args.length > 0){
+    return args.reduce((total, atual) => total +atual)
+  }
+  else return 0;
+}
+console.log(sum(1,2,3));

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "lion-lib-bigg": "^1.0.0"
+  },
+  "type": "module"
+}
