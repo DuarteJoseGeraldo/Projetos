@@ -1,8 +1,12 @@
+//nodemon -> faz o processo ficar em loop e executar a cada save
 import express from "express";
 import Joi from "joi";
+import logger from "./logger";
 const app = express();
 app.use(express.json());
-//nodemon -> faz o processo ficar em loop e executar a cada save
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(logger);
 
 const courses = [
   { id: 1, name: "course1" },
