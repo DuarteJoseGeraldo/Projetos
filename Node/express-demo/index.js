@@ -1,4 +1,6 @@
 //nodemon -> faz o processo ficar em loop e executar a cada save
+import morgan from "morgan";
+import helmet from "helmet";
 import express from "express";
 import Joi from "joi";
 import logger from "./logger";
@@ -6,6 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(helmet());
+app.use(morgan("tiny"));
 app.use(logger);
 
 const courses = [
