@@ -3,7 +3,7 @@ import config from "config";
 import morgan from "morgan";
 import helmet from "helmet";
 import express from "express";
-import { logger } from "./logger.js";
+import { logger } from "./middleware/logger.js";
 import { router as courses } from "./routes/courses.js";
 import { router as home } from "./routes/home.js";
 
