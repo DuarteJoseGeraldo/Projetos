@@ -4,7 +4,7 @@ import { router as home } from "./routes/home.js";
 const app = express();
 
 app.use(express.json());
-app.use("/store/itens", products);
+app.use("/store/products", products);
 app.use("/", home);
 
 const port = process.env.PORT || 3000;

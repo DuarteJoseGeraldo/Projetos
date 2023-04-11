@@ -13,17 +13,20 @@ const products = [
 //listar todos
 
 router.get("/", (req, res) => {
-  res.send(genders);
+  res.send(products);
 });
 
-//lista pelo id
+//selecionar pelo id
 
 router.get("/:id", (req, res) => {
-  const gender = genders.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
-  if (!gender) {
-    return res.status(404).send("Gender not found");
+  const product = products.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
+  if (!product) {
+    return res.status(404).send("Product not found");
   } else {
-    res.send(gender);
+    res.send({
+      name: product.name,
+      price: product.price,
+    });
   }
 });
 
@@ -31,32 +34,41 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   const schema = {
-    name: Joi.string().min(3).required(),
+    name: Joi.string().min(2).required(),
+    price: Joi.number().required(),
   };
   const result = Joi.validate(req.body, schema);
 
   if (result.error) {
     return res.status(400).send(result.error.details[0].message);
   }
-  const gender = {
-    id: genders.length + 1,
+  const product = {
+    // id: products.length + 1,
+    /*se fizer dessa forma quando
+    apaga um produto no meio o id do proximo adicionado fica repetido/igual ao penultimo
+    [p1,p2,p3] -> id do p3 e 3, se apagar op 2 o id do proximo add tbm sera 3
+    pq vai ser tamanho = 2 -> + 1
+    */
+    id: products[products.length - 1].id + 1, //pega o id do ultimo e soma mais 1
     name: req.body.name,
+    price: req.body.price,
   };
-  genders.push(gender);
-  res.send(gender);
+  products.push(product);
+  res.send(product);
 });
 
 //atualizar
 
 router.put("/:id", (req, res) => {
-  //o genero existe?
-  const gender = genders.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
-  if (!gender) {
-    return res.status(404).send("Gender not found");
+  //o produto existe?
+  const product = products.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
+  if (!product) {
+    return res.status(404).send("Product not found");
   } else {
     // validando as entradas
     const schema = {
-      name: Joi.string().min(3).required(),
+      name: Joi.string().min(2).required(),
+      price: Joi.number().required(),
     };
     const result = Joi.validate(req.body, schema);
 
@@ -66,8 +78,9 @@ router.put("/:id", (req, res) => {
       //preciso apenas do detalhe do erro que é uma propriedade dentro do objeto
     } else {
       //se nao existe um erro
-      gender.name = req.body.name;
-      res.send(genders);
+      product.name = req.body.name;
+      product.price = req.body.price;
+      res.send(product);
     }
   }
 });
@@ -76,11 +89,11 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   //o genero existe?
-  const gender = genders.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
-  if (!gender) {
-    return res.status(404).send("Gender not found");
+  const product = products.find((item) => item.id === parseInt(req.params.id)); //o resultado é retornado em uma string
+  if (!product) {
+    return res.status(404).send("Product not found");
   } else {
-    genders.splice(genders.indexOf(gender), 1);
-    res.send(gender);
+    products.splice(products.indexOf(product), 1);
+    res.send(product);
   }
 });
