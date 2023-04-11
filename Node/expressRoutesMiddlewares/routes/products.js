@@ -45,10 +45,7 @@ router.post("/", (req, res) => {
   const product = {
     // id: products.length + 1,
     /*se fizer dessa forma quando
-    apaga um produto no meio o id do proximo adicionado fica repetido/igual ao penultimo
-    [p1,p2,p3] -> id do p3 e 3, se apagar op 2 o id do proximo add tbm sera 3
-    pq vai ser tamanho = 2 -> + 1
-    */
+    apaga um produto no meio o id do proximo adicionado fica repetido/igual ao penultimo*/
     id: products[products.length - 1].id + 1, //pega o id do ultimo e soma mais 1
     name: req.body.name,
     price: req.body.price,
