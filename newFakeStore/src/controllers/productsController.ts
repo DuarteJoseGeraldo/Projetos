@@ -65,7 +65,7 @@ const insert = async (req: Request, res: Response) => {
     const { title, price, description, category, image, rate, countRate } =
       req.body;
 
-    const findCategory = await knexInstance("authors")
+    const findCategory = await knexInstance("categories")
       .select("id")
       .where({ name: category });
 
@@ -75,7 +75,7 @@ const insert = async (req: Request, res: Response) => {
 
     const categoryId = findCategory[0].id;
 
-    const idNewProduct: number[] = await knexInstance("books").insert({
+    const idNewProduct: number[] = await knexInstance("products").insert({
       title,
       price,
       description,
