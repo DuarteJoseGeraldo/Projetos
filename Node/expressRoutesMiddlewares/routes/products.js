@@ -1,6 +1,8 @@
 import express from "express";
 import Joi from "joi";
 export const router = express.Router();
+{
+}
 
 const products = [
   { id: 1, name: "bola", price: 10.5 },
