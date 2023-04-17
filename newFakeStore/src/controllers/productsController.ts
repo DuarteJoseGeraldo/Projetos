@@ -4,7 +4,7 @@ import config from "../../knexfile";
 
 const knexInstance = knex(config);
 
-type Product = {
+export type Product = {
   id?: number;
   title: string;
   price: number;
@@ -12,7 +12,20 @@ type Product = {
   category: string;
   image: string;
   rate: number;
-  count: number;
+  countRate: number;
+};
+
+type oldProduct = {
+  id?: number;
+  title: string;
+  price: number;
+  category_id: number;
+  description: string;
+  image: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
 };
 
 const index = async (req: Request, res: Response) => {
@@ -23,16 +36,29 @@ const index = async (req: Request, res: Response) => {
         "products.price",
         "products.description",
         "products.title",
-        "category.name as category",
+        "categories.name as category",
         "products.image",
         "products.rate",
         "products.countRate"
       )
-      .join("categories", "category.id", "=", "products.category_id");
+      .join("categories", "categories.id", "=", "products.category_id");
 
-    res.status(200).json(products);
-  } catch (error) {
-    res.send(error);
+    const productsAPIStructure = products.map((item: Product) => {
+      return {
+        title: item.title,
+        price: item.price,
+        category: item.category,
+        description: item.description,
+        image: item.image,
+        rating: {
+          rate: item.rate,
+          count: item.countRate,
+        },
+      };
+    });
+    res.status(200).json(productsAPIStructure);
+  } catch (error: any) {
+    res.send(error.message ? { error: error.message } : error);
   }
 };
 
@@ -44,12 +70,12 @@ const show = async (req: Request, res: Response) => {
         "products.title",
         "products.price",
         "products.description",
-        "category.name as category",
+        "categories.name as category",
         "products.image",
         "products.rate",
         "products.countRate"
       )
-      .join("categories", "category.id", "=", "products.category_id")
+      .join("categories", "categories.id", "=", "products.category_id")
       .where({ "products.id": id });
 
     if (!product.length) throw new Error("Esse produto não existe");
@@ -79,7 +105,7 @@ const insert = async (req: Request, res: Response) => {
       title,
       price,
       description,
-      category: categoryId,
+      category_id: categoryId,
       image,
       rate,
       countRate,
@@ -94,8 +120,8 @@ const insert = async (req: Request, res: Response) => {
       rate,
       countRate,
     });
-  } catch (error) {
-    res.send(error);
+  } catch (error: any) {
+    res.send(error.message ? { error: error.message } : error);
   }
 };
 
@@ -124,7 +150,7 @@ const update = async (req: Request, res: Response) => {
       updateData.category_id = categoryData[0].id;
     }
 
-    await knexInstance("books").update(updateData).where({ id });
+    await knexInstance("products").update(updateData).where({ id });
 
     res
       .status(200)

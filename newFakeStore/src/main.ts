@@ -10,7 +10,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("FakeStore API is Runiing");
 });
 
-app.use("/fakestore/v1", router);
+app.use("/fakestoreapi.com", router);
 
 app.listen(port, () => {
   console.log(`API listening on port ${port}`);

@@ -4,9 +4,9 @@ import categoriesController from "../controllers/categoriesController";
 const router: Router = Router();
 
 router.get("/", categoriesController.index);
-router.get("/:id", categoriesController.show);
+router.get("/:name", categoriesController.show); //mostra todos os itens dessa categoria
 router.post("/", categoriesController.insert);
-router.put("/:id", categoriesController.update);
-router.delete("/:id", categoriesController.remove);
+router.put("/:name", categoriesController.update);
+router.delete("/:name", categoriesController.remove);
 
 export { router };
