@@ -12,7 +12,9 @@ type Category = {
 
 const index = async (req: Request, res: Response) => {
   try {
-    const categories: Category[] = await knexInstance("categories").select("*");
+    const categories: Category[] = await knexInstance("categories").select(
+      "name"
+    );
 
     res.status(200).json(categories);
   } catch (error: any) {
@@ -24,13 +26,14 @@ const show = async (req: Request, res: Response) => {
   try {
     const categoryName = req.params.name;
     const category: Category[] = await knexInstance("categories")
-      .select("categories.id", "categories.name")
+      .select("categories.id")
       .where({ "categories.name": categoryName });
 
     if (!category.length) throw new Error("Essa categoria não existe");
 
     const products: Product[] = await knexInstance("products")
       .select(
+        "products.id",
         "products.title",
         "products.price",
         "products.description",
@@ -42,7 +45,19 @@ const show = async (req: Request, res: Response) => {
       .join("categories", "categories.id", "=", "products.category_id")
       .where({ "products.category_id": category[0].id });
 
-    res.status(200).json(products);
+    const productsAPIStructure = products.map((item: Product) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      category: item.category,
+      description: item.description,
+      image: item.image,
+      rating: {
+        rate: item.rate,
+        count: item.countRate,
+      },
+    }));
+    res.status(200).json(productsAPIStructure);
   } catch (error: any) {
     res.send(error.message ? { error: error.message } : error);
   }

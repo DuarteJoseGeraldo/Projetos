@@ -15,19 +15,6 @@ export type Product = {
   countRate: number;
 };
 
-type oldProduct = {
-  id?: number;
-  title: string;
-  price: number;
-  category_id: number;
-  description: string;
-  image: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-};
-
 const index = async (req: Request, res: Response) => {
   try {
     const products: Product[] = await knexInstance("products")
@@ -43,19 +30,17 @@ const index = async (req: Request, res: Response) => {
       )
       .join("categories", "categories.id", "=", "products.category_id");
 
-    const productsAPIStructure = products.map((item: Product) => {
-      return {
-        title: item.title,
-        price: item.price,
-        category: item.category,
-        description: item.description,
-        image: item.image,
-        rating: {
-          rate: item.rate,
-          count: item.countRate,
-        },
-      };
-    });
+    const productsAPIStructure = products.map((item: Product) => ({
+      title: item.title,
+      price: item.price,
+      category: item.category,
+      description: item.description,
+      image: item.image,
+      rating: {
+        rate: item.rate,
+        count: item.countRate,
+      },
+    }));
     res.status(200).json(productsAPIStructure);
   } catch (error: any) {
     res.send(error.message ? { error: error.message } : error);
@@ -80,7 +65,18 @@ const show = async (req: Request, res: Response) => {
 
     if (!product.length) throw new Error("Esse produto não existe");
 
-    res.status(200).json(product[0]);
+    const productsAPIStructure = product.map((item: Product) => ({
+      title: item.title,
+      price: item.price,
+      category: item.category,
+      description: item.description,
+      image: item.image,
+      rating: {
+        rate: item.rate,
+        count: item.countRate,
+      },
+    }));
+    res.status(200).json(productsAPIStructure[0]);
   } catch (error: any) {
     res.send(error.message ? { error: error.message } : error);
   }
@@ -139,16 +135,14 @@ const update = async (req: Request, res: Response) => {
       countRate,
     };
 
-    if (category) {
-      const categoryData = await knexInstance("categories")
-        .select("id")
-        .where({ name: category });
+    const categoryData = await knexInstance("categories")
+      .select("id")
+      .where({ name: category });
 
-      if (!categoryData[0]) {
-        throw new Error("Categoria não existe");
-      }
-      updateData.category_id = categoryData[0].id;
+    if (!categoryData[0]) {
+      throw new Error("Categoria não existe");
     }
+    updateData.category_id = categoryData[0].id;
 
     await knexInstance("products").update(updateData).where({ id });
 
